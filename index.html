@@ -106,7 +106,7 @@ tbody tr:hover td{background:#fafffe}
     <button class="rtab" onclick="setRole('management',this)">Management</button>
     <button class="rtab" onclick="setRole('accounting',this)">Accounting</button>
   </div>
-  <button class="icon-btn" onclick="openM('setModal')" title="Settings"><i class="ti ti-settings"></i></button>
+  <button class="icon-btn" onclick="openM('setModal')"><i class="ti ti-settings"></i></button>
 </div>
 
 <div class="stats" id="statsBar"></div>
@@ -469,7 +469,6 @@ function openM(id){document.getElementById(id).classList.add('open')}
 function closeM(id){document.getElementById(id).classList.remove('open')}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
 
-// 启动时自动加载数据
 initMonths();render();
 if(scriptUrl){loadData();}
 </script>
