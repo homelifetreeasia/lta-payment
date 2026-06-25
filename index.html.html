@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LTA Payment Request System</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f1f5f9;color:#1e293b;font-size:13px;min-height:100vh}
+.hdr{background:#fff;border-bottom:3px solid #3a9e45;padding:0 24px;height:56px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-name{font-size:14px;font-weight:700;color:#1e293b}
+.brand-sub{font-size:11px;color:#64748b;margin-top:1px}
+.sp{flex:1}
+.role-tabs{display:flex;gap:4px;background:#f1f5f9;padding:4px;border-radius:10px}
+.rtab{padding:5px 12px;border-radius:7px;border:none;background:transparent;color:#64748b;font-size:11px;font-weight:500;cursor:pointer;transition:all .15s}
+.rtab.active{background:#fff;color:#3a9e45;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.rtab:hover:not(.active){background:#e2e8f0}
+.icon-btn{background:none;border:1px solid #e2e8f0;color:#64748b;width:32px;height:32px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s}
+.icon-btn:hover{background:#f8fafc}
+.stats{display:flex;gap:10px;padding:14px 24px;overflow-x:auto}
+.stat{background:#fff;border-radius:12px;padding:12px 16px;min-width:110px;border-left:4px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.05);flex:1}
+.stat.blue{border-left-color:#3b82f6}.stat.amber{border-left-color:#f59e0b}
+.stat.green{border-left-color:#16a34a}.stat.indigo{border-left-color:#6366f1}.stat.teal{border-left-color:#0d9488}
+.stat-n{font-size:20px;font-weight:700;color:#1e293b}
+.stat-l{font-size:10px;color:#94a3b8;margin-top:2px;font-weight:500}
+.toolbar{padding:8px 24px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fsel{background:#fff;border:1px solid #e2e8f0;color:#374151;padding:7px 12px;border-radius:8px;font-size:12px;font-family:inherit;cursor:pointer}
+.fsel:focus{outline:none;border-color:#3a9e45}
+.btn{padding:7px 16px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:#3a9e45;color:#fff;box-shadow:0 2px 4px rgba(58,158,69,.25)}.btn-primary:hover{background:#2d7a36}
+.btn-green{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}.btn-green:hover{background:#bbf7d0}
+.btn-red{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}.btn-red:hover{background:#fecaca}
+.btn-blue{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}.btn-blue:hover{background:#bfdbfe}
+.btn-ghost{background:#f8fafc;color:#475569;border:1px solid #e2e8f0}.btn-ghost:hover{background:#f1f5f9}
+.btn-sm{padding:4px 10px;font-size:11px;border-radius:6px}
+.wrap{padding:0 24px 24px;overflow-x:auto}
+.card{background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th{background:#f8fafc;color:#64748b;font-size:10px;text-transform:uppercase;letter-spacing:.6px;padding:10px 12px;text-align:left;border-bottom:1px solid #f1f5f9;font-weight:600;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #f8fafc;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#fafffe}
+.badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.7}
+.b-pending{background:#fef3c7;color:#92400e}.b-approved{background:#dcfce7;color:#15803d}
+.b-rejected{background:#fee2e2;color:#b91c1c}.b-paid{background:#dbeafe;color:#1d4ed8}
+.b-scheduled{background:#ede9fe;color:#5b21b6}.b-dash{color:#cbd5e1;font-size:12px}
+.b-deposit{background:#fef9c3;color:#854d0e;border:1px solid #fde047;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px}
+.b-full{background:#e0f2fe;color:#075985;border:1px solid #7dd3fc;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px}
+.amt-cell{font-weight:700;color:#15803d}
+.mono{font-family:'SF Mono',Consolas,monospace;font-size:11px;color:#64748b}
+.desc-cell{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#475569}
+.sub-text{font-size:10px;color:#94a3b8;margin-top:2px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:24px;width:94%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.modal-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f1f5f9}
+.modal-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.modal-icon.green{background:#dcfce7}.modal-icon.blue{background:#dbeafe}
+.modal h2{font-size:15px;font-weight:600;color:#1e293b}
+.modal p{font-size:12px;color:#94a3b8;margin-top:2px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:10px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.fg input,.fg select,.fg textarea{width:100%;background:#f8fafc;border:1.5px solid #e2e8f0;color:#1e293b;padding:8px 11px;border-radius:9px;font-size:13px;font-family:inherit;transition:border .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:#3a9e45;background:#fff}
+.fg textarea{height:64px;resize:vertical}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:flex;background:#f1f5f9;border-radius:9px;padding:3px;gap:3px}
+.seg-btn{flex:1;padding:7px 10px;border:none;border-radius:7px;background:transparent;color:#64748b;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;text-align:center}
+.seg-btn.active{background:#fff;color:#3a9e45;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.divider{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin:14px 0 10px;display:flex;align-items:center;gap:8px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#f1f5f9}
+.file-zone{border:1.5px dashed #cbd5e1;border-radius:9px;padding:10px 14px;display:flex;align-items:center;gap:8px;cursor:pointer;transition:all .15s;background:#f8fafc}
+.file-zone:hover{border-color:#3a9e45;background:#f0fdf4}
+.file-zone.has-file{border-color:#3a9e45;background:#f0fdf4;border-style:solid}
+.file-zone i{font-size:16px;color:#94a3b8;flex-shrink:0}
+.file-zone.has-file i,.file-zone.has-file .fn{color:#15803d;font-weight:600}
+.fn{font-size:11px;color:#64748b;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.detail-box{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px;margin-bottom:14px}
+.dr{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:12px}
+.dr:last-child{border-bottom:none}
+.dl{color:#64748b;font-weight:500;flex-shrink:0;margin-right:8px;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+.dv{color:#1e293b;font-weight:600;text-align:right}
+.dv.green{color:#15803d;font-size:15px}
+.attach-chip{display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:5px;padding:2px 8px;font-size:11px;color:#15803d}
+.mf{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid #f1f5f9}
+.toast{position:fixed;bottom:20px;right:20px;background:#1e293b;color:#fff;padding:10px 18px;border-radius:10px;font-size:12px;font-weight:500;z-index:999;opacity:0;transition:all .3s;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.toast.show{opacity:1;transform:translateY(-2px)}
+.empty{text-align:center;padding:40px;color:#94a3b8}
+.rp{display:inline-flex;align-items:center;gap:6px}
+.av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="brand">
+    <div style="width:40px;height:40px;background:#3a9e45;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0">LTA</div>
+    <div>
+      <div class="brand-name">LifeTree Asia</div>
+      <div class="brand-sub">Payment Request System</div>
+    </div>
+  </div>
+  <div class="sp"></div>
+  <div class="role-tabs">
+    <button class="rtab active" onclick="setRole('employee',this)">Employee</button>
+    <button class="rtab" onclick="setRole('management',this)">Management</button>
+    <button class="rtab" onclick="setRole('accounting',this)">Accounting</button>
+  </div>
+  <button class="icon-btn" onclick="openM('setModal')" title="Settings"><i class="ti ti-settings"></i></button>
+</div>
+
+<div class="stats" id="statsBar"></div>
+
+<div class="toolbar">
+  <select class="fsel" id="monthFilter" onchange="render()"><option value="">All Months</option></select>
+  <select class="fsel" id="statusFilter" onchange="render()">
+    <option value="">All Status</option>
+    <option value="pending">Pending</option>
+    <option value="approved">Approved</option>
+    <option value="rejected">Rejected</option>
+    <option value="paid">Paid</option>
+  </select>
+  <div class="sp"></div>
+  <button class="btn btn-primary" onclick="openNew()"><i class="ti ti-plus"></i> New Request</button>
+</div>
+
+<div class="wrap"><div class="card">
+<table>
+  <thead><tr>
+    <th>Date</th><th>申请人</th><th>Payee</th><th>Amount (RM)</th>
+    <th>Payment Type</th><th>Invoice No.</th><th>Description</th>
+    <th>Management Approval</th><th>Payment Status</th><th>会计备注</th><th>Actions</th>
+  </tr></thead>
+  <tbody id="tBody"></tbody>
+</table>
+</div></div>
+
+<!-- New Request Modal -->
+<div class="overlay" id="newModal">
+<div class="modal">
+  <div class="modal-hdr">
+    <div class="modal-icon green">📝</div>
+    <div><h2>New Payment Request</h2><p>Fill in all details to submit for approval</p></div>
+  </div>
+  <div class="divider">Request Info</div>
+  <div class="frow">
+    <div class="fg"><label>申请人</label><input id="f_req" placeholder="Your full name"></div>
+    <div class="fg"><label>Date</label><input type="date" id="f_date"></div>
+  </div>
+  <div class="fg"><label>Payee / Supplier</label><input id="f_payee" placeholder="Company or person name"></div>
+  <div class="frow">
+    <div class="fg"><label>Amount (RM)</label><input type="number" id="f_amt" placeholder="0.00" step="0.01" min="0"></div>
+    <div class="fg"><label>Bank Account</label><input id="f_bank" placeholder="Bank – Acc No."></div>
+  </div>
+  <div class="fg">
+    <label>Payment Type</label>
+    <div class="seg">
+      <button class="seg-btn active" onclick="selPay('Deposit',this)">💰 Deposit</button>
+      <button class="seg-btn" onclick="selPay('Full Payment',this)">✅ Full Payment</button>
+    </div>
+    <input type="hidden" id="f_paytype" value="Deposit">
+  </div>
+  <div class="fg"><label>Description</label><textarea id="f_desc" placeholder="Purpose of this payment..."></textarea></div>
+  <div class="divider">Reference Numbers</div>
+  <div class="fg"><label>Invoice No.</label><input id="f_inv_no" placeholder="e.g. INV-2026-001"></div>
+  <div class="frow">
+    <div class="fg"><label>Reg No. / IC No.</label><input id="f_reg" placeholder="Company reg or IC no."></div>
+    <div class="fg"><label>TIN Number</label><input id="f_tin" placeholder="e.g. C12345678900"></div>
+  </div>
+  <div class="divider">Attachment</div>
+  <div class="fg">
+    <label>Attach Invoice</label>
+    <div class="file-zone" id="zone_inv" onclick="document.getElementById('f_inv_file').click()">
+      <i class="ti ti-file-invoice"></i>
+      <span class="fn" id="lbl_inv">Click to attach invoice (PDF / Image)</span>
+      <input type="file" id="f_inv_file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="pickFile(this,'zone_inv','lbl_inv','Click to attach invoice (PDF / Image)')">
+    </div>
+  </div>
+  <div class="mf">
+    <button class="btn btn-ghost" onclick="closeM('newModal')">Cancel</button>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitReq()">Submit Request</button>
+  </div>
+</div>
+</div>
+
+<!-- Approve Modal -->
+<div class="overlay" id="appModal">
+<div class="modal">
+  <div class="modal-hdr">
+    <div class="modal-icon green">✅</div>
+    <div><h2>Review Payment Request</h2><p>Approve or reject this request</p></div>
+  </div>
+  <div class="detail-box" id="appDetail"></div>
+  <div class="fg"><label>Your Name</label><input id="a_name" placeholder="Your name"></div>
+  <div class="fg"><label>Remarks (optional)</label><textarea id="a_notes" placeholder="Comments..."></textarea></div>
+  <div class="mf">
+    <button class="btn btn-ghost" onclick="closeM('appModal')">Cancel</button>
+    <button class="btn btn-red" onclick="doApprove('Rejected')"><i class="ti ti-x"></i> Reject</button>
+    <button class="btn btn-green" onclick="doApprove('Approved')"><i class="ti ti-check"></i> Approve</button>
+  </div>
+</div>
+</div>
+
+<!-- Payment Modal -->
+<div class="overlay" id="payModal">
+<div class="modal">
+  <div class="modal-hdr">
+    <div class="modal-icon blue">💳</div>
+    <div><h2>Update Payment Status</h2><p>Record payment details</p></div>
+  </div>
+  <div class="detail-box" id="payDetail"></div>
+  <div class="frow">
+    <div class="fg"><label>Payment Status</label>
+      <select id="p_stat"><option>Scheduled</option><option>Paid</option></select>
+    </div>
+    <div class="fg"><label>Payment Date</label><input type="date" id="p_date"></div>
+  </div>
+  <div class="fg"><label>会计备注</label><textarea id="p_notes" placeholder="Bank used, transaction ref, etc..."></textarea></div>
+  <div class="fg">
+    <label>Attach Payment Slip</label>
+    <div class="file-zone" id="zone_slip" onclick="document.getElementById('p_slip_file').click()">
+      <i class="ti ti-file-text"></i>
+      <span class="fn" id="lbl_slip">Click to attach payment slip (PDF / Image)</span>
+      <input type="file" id="p_slip_file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="pickFile(this,'zone_slip','lbl_slip','Click to attach payment slip (PDF / Image)')">
+    </div>
+  </div>
+  <div class="mf">
+    <button class="btn btn-ghost" onclick="closeM('payModal')">Cancel</button>
+    <button class="btn btn-primary" id="payBtn" onclick="doPay()">Update Status</button>
+  </div>
+</div>
+</div>
+
+<!-- Settings -->
+<div class="overlay" id="setModal">
+<div class="modal">
+  <div class="modal-hdr">
+    <div class="modal-icon blue">⚙️</div>
+    <div><h2>Settings</h2><p>Google Sheets connection</p></div>
+  </div>
+  <div class="fg">
+    <label>Google Apps Script URL</label>
+    <input id="s_url" placeholder="https://script.google.com/macros/s/.../exec">
+    <div style="font-size:11px;color:#94a3b8;margin-top:5px">Paste your deployed Web App URL. Leave blank for demo mode.</div>
+  </div>
+  <div class="mf">
+    <button class="btn btn-ghost" onclick="closeM('setModal')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveSetting()">Save</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let role='employee', curId=null;
+let scriptUrl=localStorage.getItem('ltaScriptUrl')||'';
+const today=()=>new Date().toISOString().split('T')[0];
+const ini=n=>n.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+const pal=['#16a34a','#0d9488','#2563eb','#7c3aed','#db2777','#ea580c'];
+const ac=n=>{let h=0;for(let c of n)h=(h*31+c.charCodeAt(0))%pal.length;return pal[h]};
+let data=[];
+
+function selPay(v,el){
+  document.getElementById('f_paytype').value=v;
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function pickFile(inp,zoneId,lblId,placeholder){
+  const f=inp.files[0];
+  const z=document.getElementById(zoneId);
+  const l=document.getElementById(lblId);
+  if(f){l.textContent=f.name;z.classList.add('has-file')}
+  else{l.textContent=placeholder;z.classList.remove('has-file')}
+}
+
+function setRole(r,el){
+  role=r;
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function initMonths(){
+  const ms=[...new Set(data.map(r=>r.date.slice(0,7)))].sort().reverse();
+  const s=document.getElementById('monthFilter');
+  while(s.options.length>1)s.remove(1);
+  ms.forEach(m=>{const[y,mo]=m.split('-');s.add(new Option(new Date(y,+mo-1,1).toLocaleString('en',{month:'short',year:'numeric'}),m))});
+}
+
+function badge(s){
+  if(!s)return'<span class="b-dash">—</span>';
+  const c={Pending:'b-pending',Approved:'b-approved',Rejected:'b-rejected',Paid:'b-paid',Scheduled:'b-scheduled'}[s]||'b-pending';
+  return`<span class="badge ${c}">${s}</span>`;
+}
+function ptBadge(v){return v==='Deposit'?'<span class="b-deposit">Deposit</span>':'<span class="b-full">Full Payment</span>'}
+function attach(n){
+  if(!n)return'—';
+  if(n.startsWith('http'))return`<a href="${n}" target="_blank" class="attach-chip" style="text-decoration:none"><i class="ti ti-external-link" style="font-size:10px"></i> View</a>`;
+  return`<span class="attach-chip"><i class="ti ti-paperclip" style="font-size:10px"></i>${n}</span>`;
+}
+function getActions(r){
+  if(role==='management'&&r.mgtStat==='Pending')return`<button class="btn btn-green btn-sm" onclick="openApp('${r.id}')"><i class="ti ti-pencil"></i> Review</button>`;
+  if(role==='accounting'&&r.mgtStat==='Approved'&&r.payStat!=='Paid')return`<button class="btn btn-blue btn-sm" onclick="openPay('${r.id}')"><i class="ti ti-credit-card"></i> Update</button>`;
+  return'<span class="b-dash">—</span>';
+}
+
+function render(){
+  const mf=document.getElementById('monthFilter').value;
+  const sf=document.getElementById('statusFilter').value;
+  let rows=[...data];
+  if(mf)rows=rows.filter(r=>r.date.startsWith(mf));
+  if(sf==='pending')rows=rows.filter(r=>r.mgtStat==='Pending');
+  else if(sf==='approved')rows=rows.filter(r=>r.mgtStat==='Approved');
+  else if(sf==='rejected')rows=rows.filter(r=>r.mgtStat==='Rejected');
+  else if(sf==='paid')rows=rows.filter(r=>r.payStat==='Paid');
+  const tb=document.getElementById('tBody');
+  if(!rows.length){tb.innerHTML=`<tr><td colspan="11" class="empty"><i class="ti ti-inbox" style="font-size:24px;display:block;margin:0 auto 8px"></i>No records found</td></tr>`;renderStats();return}
+  tb.innerHTML=rows.map(r=>`<tr>
+    <td style="color:#64748b;font-size:12px;white-space:nowrap">${r.date}</td>
+    <td><div class="rp"><div class="av" style="background:${ac(r.req)}">${ini(r.req)}</div><span style="font-weight:500">${r.req}</span></div></td>
+    <td style="font-weight:600">${r.payee}</td>
+    <td class="amt-cell">RM ${Number(r.amt).toFixed(2)}</td>
+    <td>${ptBadge(r.paytype)}</td>
+    <td class="mono">${r.invNo||'<span style="color:#cbd5e1">—</span>'}</td>
+    <td class="desc-cell" title="${r.desc}">${r.desc}</td>
+    <td>${badge(r.mgtStat||'Pending')}${r.mgtBy?`<div class="sub-text"><i class="ti ti-user" style="font-size:10px"></i> ${r.mgtBy}${r.mgtDate?' · '+r.mgtDate:''}</div>`:''}</td>
+    <td>${r.mgtStat==='Approved'?badge(r.payStat||'Pending'):'<span class="b-dash">—</span>'}</td>
+    <td style="font-size:11px;color:#64748b;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.acctNote||'—'}</td>
+    <td>${getActions(r)}</td>
+  </tr>`).join('');
+  renderStats();
+}
+
+function renderStats(){
+  const t=data.length,p=data.filter(r=>r.mgtStat==='Pending').length;
+  const a=data.filter(r=>r.mgtStat==='Approved').length,pd=data.filter(r=>r.payStat==='Paid').length;
+  const amt=data.filter(r=>r.payStat==='Paid').reduce((s,r)=>s+Number(r.amt),0);
+  document.getElementById('statsBar').innerHTML=`
+    <div class="stat blue"><div class="stat-n">${t}</div><div class="stat-l">Total</div></div>
+    <div class="stat amber"><div class="stat-n">${p}</div><div class="stat-l">Pending</div></div>
+    <div class="stat green"><div class="stat-n">${a}</div><div class="stat-l">Approved</div></div>
+    <div class="stat indigo"><div class="stat-n">${pd}</div><div class="stat-l">Paid</div></div>
+    <div class="stat teal"><div class="stat-n" style="font-size:15px">RM ${amt.toFixed(2)}</div><div class="stat-l">Total Paid</div></div>`;
+}
+
+function toBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function openNew(){
+  document.getElementById('f_date').value=today();
+  ['f_req','f_payee','f_amt','f_bank','f_desc','f_inv_no','f_reg','f_tin'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f_inv_file').value='';
+  document.getElementById('f_paytype').value='Deposit';
+  document.querySelectorAll('.seg-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.getElementById('zone_inv').classList.remove('has-file');
+  document.getElementById('lbl_inv').textContent='Click to attach invoice (PDF / Image)';
+  openM('newModal');
+}
+
+async function submitReq(){
+  const req=document.getElementById('f_req').value.trim();
+  const dt=document.getElementById('f_date').value;
+  const payee=document.getElementById('f_payee').value.trim();
+  const amt=parseFloat(document.getElementById('f_amt').value);
+  const bank=document.getElementById('f_bank').value.trim();
+  const desc=document.getElementById('f_desc').value.trim();
+  if(!req||!payee||!amt||!bank||!desc){alert('Please fill in all required fields.');return}
+  const paytype=document.getElementById('f_paytype').value;
+  const invNo=document.getElementById('f_inv_no').value.trim();
+  const reg=document.getElementById('f_reg').value.trim();
+  const tin=document.getElementById('f_tin').value.trim();
+  const invF=document.getElementById('f_inv_file').files[0];
+  const id='PR-'+String(data.length+1).padStart(3,'0');
+  const record={id,date:dt,req,payee,amt,bank,paytype,desc,invNo,reg,tin,
+    invFile:invF?invF.name:'',slipFile:'',
+    mgtStat:'Pending',mgtBy:'',mgtDate:'',payStat:'',payDate:'',acctNote:''};
+  if(scriptUrl){
+    const btn=document.getElementById('submitBtn');
+    btn.textContent='⏳ Uploading...';btn.disabled=true;
+    try{
+      const files={};
+      if(invF){
+        const d=await toBase64(invF);
+        files.invFile={name:invF.name,data:d};
+      }
+      const result=await sync('create',record,files);
+      if(result&&result.invFileUrl)record.invFile=result.invFileUrl;
+    }catch(e){console.error('Upload error:',e)}
+    btn.textContent='Submit Request';btn.disabled=false;
+  }
+  data.unshift(record);
+  closeM('newModal');initMonths();render();
+  toast('✅ Request submitted!');
+}
+
+function openApp(id){
+  curId=id;
+  const r=data.find(x=>x.id===id);
+  document.getElementById('appDetail').innerHTML=`
+    <div class="dr"><span class="dl">Requester</span><span class="dv">${r.req}</span></div>
+    <div class="dr"><span class="dl">Payee</span><span class="dv">${r.payee}</span></div>
+    <div class="dr"><span class="dl">Amount</span><span class="dv green">RM ${Number(r.amt).toFixed(2)}</span></div>
+    <div class="dr"><span class="dl">Payment Type</span><span class="dv">${ptBadge(r.paytype)}</span></div>
+    <div class="dr"><span class="dl">Bank Account</span><span class="dv">${r.bank}</span></div>
+    <div class="dr"><span class="dl">Invoice No.</span><span class="dv">${r.invNo||'—'}</span></div>
+    <div class="dr"><span class="dl">Reg / IC No.</span><span class="dv">${r.reg||'—'}</span></div>
+    <div class="dr"><span class="dl">TIN Number</span><span class="dv">${r.tin||'—'}</span></div>
+    <div class="dr"><span class="dl">Description</span><span class="dv">${r.desc}</span></div>
+    <div class="dr"><span class="dl">Invoice</span><span class="dv">${attach(r.invFile)}</span></div>`;
+  document.getElementById('a_name').value='';
+  document.getElementById('a_notes').value='';
+  openM('appModal');
+}
+
+function doApprove(d){
+  const nm=document.getElementById('a_name').value.trim();
+  if(!nm){alert('Please enter your name.');return}
+  const r=data.find(x=>x.id===curId);
+  r.mgtStat=d;r.mgtBy=nm;r.mgtDate=today();
+  if(scriptUrl)sync('update',r,{});
+  closeM('appModal');render();
+  toast(d==='Approved'?'✅ Approved':'❌ Rejected');
+}
+
+function openPay(id){
+  curId=id;
+  const r=data.find(x=>x.id===id);
+  document.getElementById('payDetail').innerHTML=`
+    <div class="dr"><span class="dl">Payee</span><span class="dv">${r.payee}</span></div>
+    <div class="dr"><span class="dl">Payment Type</span><span class="dv">${ptBadge(r.paytype)}</span></div>
+    <div class="dr"><span class="dl">Invoice No.</span><span class="dv">${r.invNo||'—'}</span></div>
+    <div class="dr"><span class="dl">Amount</span><span class="dv green">RM ${Number(r.amt).toFixed(2)}</span></div>
+    <div class="dr"><span class="dl">Bank Account</span><span class="dv">${r.bank}</span></div>`;
+  document.getElementById('p_date').value=today();
+  document.getElementById('p_notes').value='';
+  document.getElementById('p_slip_file').value='';
+  document.getElementById('lbl_slip').textContent='Click to attach payment slip (PDF / Image)';
+  document.getElementById('zone_slip').classList.remove('has-file');
+  openM('payModal');
+}
+
+async function doPay(){
+  const s=document.getElementById('p_stat').value;
+  const dt=document.getElementById('p_date').value;
+  const n=document.getElementById('p_notes').value.trim();
+  const slipF=document.getElementById('p_slip_file').files[0];
+  const r=data.find(x=>x.id===curId);
+  r.payStat=s;r.payDate=dt;r.acctNote=n;
+  if(slipF)r.slipFile=slipF.name;
+  if(scriptUrl){
+    const btn=document.getElementById('payBtn');
+    btn.textContent='⏳ Uploading...';btn.disabled=true;
+    try{
+      const files={};
+      if(slipF){const d=await toBase64(slipF);files.slipFile={name:slipF.name,data:d}}
+      const result=await sync('update',r,files);
+      if(result&&result.slipFileUrl)r.slipFile=result.slipFileUrl;
+    }catch(e){console.error('Upload error:',e)}
+    btn.textContent='Update Status';btn.disabled=false;
+  }
+  closeM('payModal');render();
+  toast('💳 Payment status updated');
+}
+
+function saveSetting(){
+  scriptUrl=document.getElementById('s_url').value.trim();
+  localStorage.setItem('ltaScriptUrl',scriptUrl);
+  closeM('setModal');
+  toast('⚙️ Settings saved');
+}
+
+// Load saved URL on startup
+document.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('ltaScriptUrl');
+  if(saved)scriptUrl=saved;
+});
+
+async function sync(action,row,files){
+  if(!scriptUrl)return{};
+  try{
+    const resp=await fetch(scriptUrl,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({action,row,files:files||{}})
+    });
+    return await resp.json();
+  }catch(e){console.error('Sync error:',e);return{}}
+}
+
+function openM(id){document.getElementById(id).classList.add('open')}
+function closeM(id){document.getElementById(id).classList.remove('open')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+
+initMonths();render();
+</script>
+</body>
+</html>
