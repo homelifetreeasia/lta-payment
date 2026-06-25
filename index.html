@@ -29,7 +29,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .fsel{background:#fff;border:1px solid #e2e8f0;color:#374151;padding:7px 12px;border-radius:8px;font-size:12px;font-family:inherit;cursor:pointer}
 .fsel:focus{outline:none;border-color:#3a9e45}
 .btn{padding:7px 16px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
-.btn-primary{background:#3a9e45;color:#fff;box-shadow:0 2px 4px rgba(58,158,69,.25)}.btn-primary:hover{background:#2d7a36}
+.btn-primary{background:#3a9e45;color:#fff}.btn-primary:hover{background:#2d7a36}
 .btn-green{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}.btn-green:hover{background:#bbf7d0}
 .btn-red{background:#fee2e2;color:#b91c1c;border:1px solid #fecaca}.btn-red:hover{background:#fecaca}
 .btn-blue{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}.btn-blue:hover{background:#bfdbfe}
@@ -98,10 +98,7 @@ tbody tr:hover td{background:#fafffe}
 <div class="hdr">
   <div class="brand">
     <div style="width:40px;height:40px;background:#3a9e45;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;letter-spacing:-.5px;flex-shrink:0">LTA</div>
-    <div>
-      <div class="brand-name">LifeTree Asia</div>
-      <div class="brand-sub">Payment Request System</div>
-    </div>
+    <div><div class="brand-name">LifeTree Asia</div><div class="brand-sub">Payment Request System</div></div>
   </div>
   <div class="sp"></div>
   <div class="role-tabs">
@@ -138,13 +135,9 @@ tbody tr:hover td{background:#fafffe}
 </table>
 </div></div>
 
-<!-- New Request Modal -->
 <div class="overlay" id="newModal">
 <div class="modal">
-  <div class="modal-hdr">
-    <div class="modal-icon green">📝</div>
-    <div><h2>New Payment Request</h2><p>Fill in all details to submit for approval</p></div>
-  </div>
+  <div class="modal-hdr"><div class="modal-icon green">📝</div><div><h2>New Payment Request</h2><p>Fill in all details to submit for approval</p></div></div>
   <div class="divider">Request Info</div>
   <div class="frow">
     <div class="fg"><label>申请人</label><input id="f_req" placeholder="Your full name"></div>
@@ -186,13 +179,9 @@ tbody tr:hover td{background:#fafffe}
 </div>
 </div>
 
-<!-- Approve Modal -->
 <div class="overlay" id="appModal">
 <div class="modal">
-  <div class="modal-hdr">
-    <div class="modal-icon green">✅</div>
-    <div><h2>Review Payment Request</h2><p>Approve or reject this request</p></div>
-  </div>
+  <div class="modal-hdr"><div class="modal-icon green">✅</div><div><h2>Review Payment Request</h2><p>Approve or reject this request</p></div></div>
   <div class="detail-box" id="appDetail"></div>
   <div class="fg"><label>Your Name</label><input id="a_name" placeholder="Your name"></div>
   <div class="fg"><label>Remarks (optional)</label><textarea id="a_notes" placeholder="Comments..."></textarea></div>
@@ -204,18 +193,12 @@ tbody tr:hover td{background:#fafffe}
 </div>
 </div>
 
-<!-- Payment Modal -->
 <div class="overlay" id="payModal">
 <div class="modal">
-  <div class="modal-hdr">
-    <div class="modal-icon blue">💳</div>
-    <div><h2>Update Payment Status</h2><p>Record payment details</p></div>
-  </div>
+  <div class="modal-hdr"><div class="modal-icon blue">💳</div><div><h2>Update Payment Status</h2><p>Record payment details</p></div></div>
   <div class="detail-box" id="payDetail"></div>
   <div class="frow">
-    <div class="fg"><label>Payment Status</label>
-      <select id="p_stat"><option>Scheduled</option><option>Paid</option></select>
-    </div>
+    <div class="fg"><label>Payment Status</label><select id="p_stat"><option>Scheduled</option><option>Paid</option></select></div>
     <div class="fg"><label>Payment Date</label><input type="date" id="p_date"></div>
   </div>
   <div class="fg"><label>会计备注</label><textarea id="p_notes" placeholder="Bank used, transaction ref, etc..."></textarea></div>
@@ -234,13 +217,9 @@ tbody tr:hover td{background:#fafffe}
 </div>
 </div>
 
-<!-- Settings -->
 <div class="overlay" id="setModal">
 <div class="modal">
-  <div class="modal-hdr">
-    <div class="modal-icon blue">⚙️</div>
-    <div><h2>Settings</h2><p>Google Sheets connection</p></div>
-  </div>
+  <div class="modal-hdr"><div class="modal-icon blue">⚙️</div><div><h2>Settings</h2><p>Google Sheets connection</p></div></div>
   <div class="fg">
     <label>Google Apps Script URL</label>
     <input id="s_url" placeholder="https://script.google.com/macros/s/.../exec">
@@ -271,9 +250,7 @@ function selPay(v,el){
 }
 
 function pickFile(inp,zoneId,lblId,placeholder){
-  const f=inp.files[0];
-  const z=document.getElementById(zoneId);
-  const l=document.getElementById(lblId);
+  const f=inp.files[0],z=document.getElementById(zoneId),l=document.getElementById(lblId);
   if(f){l.textContent=f.name;z.classList.add('has-file')}
   else{l.textContent=placeholder;z.classList.remove('has-file')}
 }
@@ -281,8 +258,7 @@ function pickFile(inp,zoneId,lblId,placeholder){
 function setRole(r,el){
   role=r;
   document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  render();
+  el.classList.add('active');render();
 }
 
 function initMonths(){
@@ -321,14 +297,14 @@ function render(){
   const tb=document.getElementById('tBody');
   if(!rows.length){tb.innerHTML=`<tr><td colspan="11" class="empty"><i class="ti ti-inbox" style="font-size:24px;display:block;margin:0 auto 8px"></i>No records found</td></tr>`;renderStats();return}
   tb.innerHTML=rows.map(r=>`<tr>
-    <td style="color:#64748b;font-size:12px;white-space:nowrap">${r.date}</td>
+    <td style="color:#64748b;font-size:12px;white-space:nowrap">${String(r.date).slice(0,10)}</td>
     <td><div class="rp"><div class="av" style="background:${ac(r.req)}">${ini(r.req)}</div><span style="font-weight:500">${r.req}</span></div></td>
     <td style="font-weight:600">${r.payee}</td>
     <td class="amt-cell">RM ${Number(r.amt).toFixed(2)}</td>
     <td>${ptBadge(r.paytype)}</td>
     <td class="mono">${r.invNo||'<span style="color:#cbd5e1">—</span>'}</td>
     <td class="desc-cell" title="${r.desc}">${r.desc}</td>
-    <td>${badge(r.mgtStat||'Pending')}${r.mgtBy?`<div class="sub-text"><i class="ti ti-user" style="font-size:10px"></i> ${r.mgtBy}${r.mgtDate?' · '+r.mgtDate:''}</div>`:''}</td>
+    <td>${badge(r.mgtStat||'Pending')}${r.mgtBy?`<div class="sub-text"><i class="ti ti-user" style="font-size:10px"></i> ${r.mgtBy}${r.mgtDate?' · '+String(r.mgtDate).slice(0,10):''}</div>`:''}</td>
     <td>${r.mgtStat==='Approved'?badge(r.payStat||'Pending'):'<span class="b-dash">—</span>'}</td>
     <td style="font-size:11px;color:#64748b;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.acctNote||'—'}</td>
     <td>${getActions(r)}</td>
@@ -349,12 +325,20 @@ function renderStats(){
 }
 
 function toBase64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=()=>res(r.result.split(',')[1]);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
+  return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file)});
+}
+
+async function loadData(){
+  if(!scriptUrl)return;
+  try{
+    const resp=await fetch(scriptUrl+'?action=getData');
+    const result=await resp.json();
+    if(result.records&&result.records.length>0){
+      data=result.records;
+      initMonths();render();
+      toast('✅ Records loaded ('+result.records.length+')');
+    }
+  }catch(e){console.error('Load error:',e)}
 }
 
 function openNew(){
@@ -382,18 +366,13 @@ async function submitReq(){
   const tin=document.getElementById('f_tin').value.trim();
   const invF=document.getElementById('f_inv_file').files[0];
   const id='PR-'+String(data.length+1).padStart(3,'0');
-  const record={id,date:dt,req,payee,amt,bank,paytype,desc,invNo,reg,tin,
-    invFile:invF?invF.name:'',slipFile:'',
-    mgtStat:'Pending',mgtBy:'',mgtDate:'',payStat:'',payDate:'',acctNote:''};
+  const record={id,date:dt,req,payee,amt,bank,paytype,desc,invNo,reg,tin,invFile:invF?invF.name:'',slipFile:'',mgtStat:'Pending',mgtBy:'',mgtDate:'',payStat:'',payDate:'',acctNote:''};
   if(scriptUrl){
     const btn=document.getElementById('submitBtn');
     btn.textContent='⏳ Uploading...';btn.disabled=true;
     try{
       const files={};
-      if(invF){
-        const d=await toBase64(invF);
-        files.invFile={name:invF.name,data:d};
-      }
+      if(invF){const d=await toBase64(invF);files.invFile={name:invF.name,data:d}}
       const result=await sync('create',record,files);
       if(result&&result.invFileUrl)record.invFile=result.invFileUrl;
     }catch(e){console.error('Upload error:',e)}
@@ -405,8 +384,7 @@ async function submitReq(){
 }
 
 function openApp(id){
-  curId=id;
-  const r=data.find(x=>x.id===id);
+  curId=id;const r=data.find(x=>x.id===id);
   document.getElementById('appDetail').innerHTML=`
     <div class="dr"><span class="dl">Requester</span><span class="dv">${r.req}</span></div>
     <div class="dr"><span class="dl">Payee</span><span class="dv">${r.payee}</span></div>
@@ -418,8 +396,7 @@ function openApp(id){
     <div class="dr"><span class="dl">TIN Number</span><span class="dv">${r.tin||'—'}</span></div>
     <div class="dr"><span class="dl">Description</span><span class="dv">${r.desc}</span></div>
     <div class="dr"><span class="dl">Invoice</span><span class="dv">${attach(r.invFile)}</span></div>`;
-  document.getElementById('a_name').value='';
-  document.getElementById('a_notes').value='';
+  document.getElementById('a_name').value='';document.getElementById('a_notes').value='';
   openM('appModal');
 }
 
@@ -434,8 +411,7 @@ function doApprove(d){
 }
 
 function openPay(id){
-  curId=id;
-  const r=data.find(x=>x.id===id);
+  curId=id;const r=data.find(x=>x.id===id);
   document.getElementById('payDetail').innerHTML=`
     <div class="dr"><span class="dl">Payee</span><span class="dv">${r.payee}</span></div>
     <div class="dr"><span class="dl">Payment Type</span><span class="dv">${ptBadge(r.paytype)}</span></div>
@@ -478,31 +454,24 @@ function saveSetting(){
   localStorage.setItem('ltaScriptUrl',scriptUrl);
   closeM('setModal');
   toast('⚙️ Settings saved');
+  if(scriptUrl)loadData();
 }
-
-// Load saved URL on startup
-document.addEventListener('DOMContentLoaded',()=>{
-  const saved=localStorage.getItem('ltaScriptUrl');
-  if(saved)scriptUrl=saved;
-});
 
 async function sync(action,row,files){
   if(!scriptUrl)return{};
   try{
-    const resp=await fetch(scriptUrl,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({action,row,files:files||{}})
-    });
+    const resp=await fetch(scriptUrl,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,row,files:files||{}})});
     return await resp.json();
-  }catch(e){console.error('Sync error:',e);return{}}
+  }catch(e){return{}}
 }
 
 function openM(id){document.getElementById(id).classList.add('open')}
 function closeM(id){document.getElementById(id).classList.remove('open')}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
 
+// 启动时自动加载数据
 initMonths();render();
+if(scriptUrl){loadData();}
 </script>
 </body>
 </html>
