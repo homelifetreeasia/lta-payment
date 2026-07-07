@@ -470,7 +470,10 @@ function closeM(id){document.getElementById(id).classList.remove('open')}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000)}
 
 initMonths();render();
-if(scriptUrl){loadData();}
+if(scriptUrl){
+  loadData();
+  setInterval(loadData, 30000); // 每30秒自动刷新
+}
 </script>
 </body>
 </html>
