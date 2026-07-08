@@ -305,7 +305,7 @@ function render(){
     <td class="mono">${r.invNo||'<span style="color:#cbd5e1">—</span>'}</td>
     <td class="desc-cell" title="${r.desc}">${r.desc}</td>
     <td>${badge(r.mgtStat||'Pending')}${r.mgtBy?`<div class="sub-text"><i class="ti ti-user" style="font-size:10px"></i> ${r.mgtBy}${r.mgtDate?' · '+String(r.mgtDate).slice(0,10):''}</div>`:''}</td>
-    <td>${r.mgtStat==='Approved'?badge(r.payStat||'Pending'):'<span class="b-dash">—</span>'}</td>
+    <td>${r.mgtStat==='Approved'?(badge(r.payStat||'Pending')+(r.slipFile?' '+attach(r.slipFile):'')):'<span class="b-dash">—</span>'}</td>
     <td style="font-size:11px;color:#64748b;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.acctNote||'—'}</td>
     <td>${getActions(r)}</td>
   </tr>`).join('');
